@@ -1,0 +1,54 @@
+stars:
+  - name: sun
+    selfRadius: 10
+    selfRotationSpeed: 20
+    orbitRadius: 0
+    orbitAngle: 0
+    orbitRotationSpeed: 2
+planets:
+  - name: mercury
+    selfRadius: 3
+    selfRotationSpeed: 0.5
+    orbitRadius: 50
+    orbitAngle: 0
+    orbitRotationSpeed: 0.5
+  - name: venus
+    selfRadius: 5
+    selfRotationSpeed: 2.5
+    orbitRadius: 70
+    orbitAngle: 0
+    orbitRotationSpeed: 0.4
+  - name: earth
+    selfRadius: 4
+    selfRotationSpeed: 0
+    orbitRadius: 100
+    orbitAngle: 0
+    orbitRotationSpeed: 0.3
+  - name: mars
+    selfRadius: 5
+    selfRotationSpeed: 0
+    orbitRadius: 130
+    orbitAngle: 0
+    orbitRotationSpeed: 0.25
+satelites:
+  - name: luna
+    selfRadius: 1
+    selfRotationSpeed: 0
+    orbitRadius: 10
+    orbitAngle: 0
+    orbitRotationSpeed: 4
+    parent: earth
+  - name: phobos
+    selfRadius: 1
+    selfRotationSpeed: 0
+    orbitRadius: 10
+    orbitAngle: 0
+    orbitRotationSpeed: 5
+    parent: mars
+  - name: deimos
+    selfRadius: 1
+    selfRotationSpeed: 0
+    orbitRadius: 10
+    orbitAngle: 0
+    orbitRotationSpeed: 2
+    parent: mars

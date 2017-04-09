@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+
+    <meta title="Solar system View" package="system.solar" version="0.0.1" />
+    <app main="Main" file="SolarSystem" path="Export" />
+
+    <window background="0x000000" orientation="landscape" />
+    <window width="1024" height="700" if="desktop" />
+
+    <source path="src" />
+
+    <haxelib name="away3d" />
+    <haxelib name="openfl" />
+    <haxelib name="yaml" />
+
+    <assets path="Assets" rename="assets" exclude="away3d.svg" />
+
+    <icon path="Assets/away3d.svg" />
+
+</project>
