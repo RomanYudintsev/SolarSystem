@@ -1,5 +1,5 @@
 package ;
-import away3d.primitives.SphereGeometry;
+import away3d.primitives.*;
 import away3d.entities.Mesh;
 
 class SpaceBodyBase extends Mesh
@@ -10,13 +10,18 @@ class SpaceBodyBase extends Mesh
     public function new(params:SpaceBodyParams)
     {
         _params = params;
-        super(new SphereGeometry(_params._selfRadius), _params._material);
+        super(new SphereGeometry(_params._selfRadius), _params._skin);
         mouseEnabled = true;
     }
 
     override public function get_name():String
     {
         return _params._name;
+    }
+
+    public function get_src_params():SpaceBodyParams
+    {
+        return _params;
     }
 
     public function renderStep():Void

@@ -1,5 +1,9 @@
 package;
 
+import away3d.textures.CubeTextureBase;
+import away3d.lights.LightProbe;
+import away3d.lights.DirectionalLight;
+import away3d.materials.lightpickers.StaticLightPicker;
 import yaml.util.ObjectMap;
 import yaml.Yaml;
 import openfl.Assets;
@@ -68,7 +72,12 @@ class Main extends Sprite
     var panIncrement:Float = 0;
     var distanceIncrement:Float = 0;
 
-    var _pause_on_click:Bool = false;
+    var _paused:Bool = false;
+    var _paused_click:Bool = false;
+
+    var lightPicker:StaticLightPicker;
+    var light1 : PointLight = new PointLight();
+    var light2 : LightProbe = new LightProbe(new CubeTextureBase());
 
     /**
 	 * Constructor
@@ -77,9 +86,7 @@ class Main extends Sprite
     {
         super();
 
-        trace("hi");
         var _systemSource:AnyObjectMap = Yaml.parse(Assets.getText("assets/SolarSystem.yaml"));
-        trace(_systemSource.get('stars')[0].get('name'));
 
         stage.scaleMode = StageScaleMode.NO_SCALE;
         stage.align = StageAlign.TOP_LEFT;
@@ -89,10 +96,23 @@ class Main extends Sprite
         this.addChild(_view);
 
         //setup the camera
-        _view.camera.z = -1000;
+        _view.camera.z = -500;
         _view.camera.y = 200;
 
-        _cameraController = new HoverController( _view.camera, null, 180, 20, 200, 5);
+        _cameraController = new HoverController( _view.camera, null, 180, 20, 200, 0);
+
+        light1.x = 0;
+        light1.y = 0;
+        light1.color = 0xFFFFFF;
+//        light1.castsShadows = true;
+        light1.ambient = .1;
+        _view.scene.addChild(light1);
+
+//        light2.position = _view.camera.position;
+//        light2.color = 0xFFFFFF;
+//        _view.scene.addChild(light2);
+
+        lightPicker = new StaticLightPicker([light1/*, light2*/]);
 
         for (key in _systemSource.keys())
         {
@@ -102,11 +122,17 @@ class Main extends Sprite
                 var params = SpaceBodyParams.newFromYaml(item);
                 switch key {
                     case "stars": addStar(params);
-                    case "planets": addPlaneta(params);
+                    case "planets":
+                        {
+                            params._lightPicker = lightPicker;
+                            params.updateMaterial();
+                            addPlaneta(params);
+                        }
                     case "satelites":
                         {
+                            params._lightPicker = lightPicker;
+                            params.updateMaterial();
                             var parentPlaneta:SpaceBodyBase = getSpaceBodyByName(params._parentBodyName);
-                            trace(parentPlaneta);
                             if (parentPlaneta != null)
                                 addSatelite(cast (parentPlaneta, Planeta), params);
                         }
@@ -120,7 +146,6 @@ class Main extends Sprite
         {
             _view.scene.addChild(sphere);
         }
-//        _view.camera.lookAt(_solar.position);
 
         //setup the render loop
         initListeners();
@@ -153,6 +178,8 @@ class Main extends Sprite
     private function addSpaceBody(body:SpaceBodyBase):SpaceBodyBase
     {
         body.addEventListener(MouseEvent3D.CLICK, sphereClickHandler);
+        body.addEventListener(MouseEvent3D.MOUSE_OVER, sphereMouseOverHandler);
+        body.addEventListener(MouseEvent3D.MOUSE_OUT, sphereMouseOverHandler);
         _system.push(body);
         return body;
     }
@@ -164,44 +191,71 @@ class Main extends Sprite
 
     private function sphereMouseOverHandler(event:MouseEvent3D):Void
     {
-        removeEventListener(Event.ENTER_FRAME, _onEnterFrame);
-        _view.render();
+        _focusOn = cast (event.currentTarget, SpaceBodyBase);
+        if (!_paused_click)
+            _paused = !_paused;
     }
     private function sphereMouseOutHandler(event:MouseEvent3D):Void
     {
-        addEventListener(Event.ENTER_FRAME, _onEnterFrame);
+        if (_paused_click)
+            return;
+        _paused = !_paused;
     }
     private function sphereClickHandler(event:MouseEvent3D):Void
     {
-        _focusOn = cast (event.currentTarget, SpaceBodyBase);
-        _pause_on_click = !_pause_on_click;
+        if (_focusOn == _focusOnClick)
+        {
+            _paused_click = !_paused_click;
+            if (_paused_click)
+            {
+                _focusOnClick = _focusOn;
+            } else {
+                _focusOnClick = null;
+            }
+        } else {
+            _paused_click = true;
+            _focusOnClick = _focusOn;
+        }
     }
     /**
 	 * render loop
 	 */
     private static var ctr:Float = 0;
-    private var _focusOn:Mesh;
+    private var _focusOn:SpaceBodyBase;
+    private var _focusOnClick:SpaceBodyBase;
+
+    private var _info:InfoBase;
     private function _onEnterFrame(e:Event):Void
     {
-        if (_pause_on_click)
+        if (_paused)
         {
-
+            if (_info == null)
+            {
+                _info = new InfoBase(500, 500, _focusOn.get_src_params());
+                this.addChild(_info);
+            }
+            _info.set_info(_focusOn.get_src_params());
         } else {
+            if (_info != null)
+            {
+                this.removeChild(_info);
+                _info = null;
+            }
             var sphere:SpaceBodyBase;
             for ( sphere in _system)
             {
                 sphere.renderStep();
             }
-
-            // Update camera.
-            if (move) {
-                _cameraController.panAngle = 0.3*(stage.mouseX - lastMouseX) + lastPanAngle;
-                _cameraController.tiltAngle = 0.3*(stage.mouseY - lastMouseY) + lastTiltAngle;
-            }
-            _cameraController.panAngle += panIncrement;
-            _cameraController.tiltAngle += tiltIncrement;
-            _cameraController.distance += distanceIncrement;
         }
+        // Update camera.
+        if (move) {
+            _cameraController.panAngle = 0.3*(stage.mouseX - lastMouseX) + lastPanAngle;
+            _cameraController.tiltAngle = 0.3*(stage.mouseY - lastMouseY) + lastTiltAngle;
+        }
+        _cameraController.panAngle += panIncrement;
+        _cameraController.tiltAngle += tiltIncrement;
+        _cameraController.distance += distanceIncrement;
+
         _view.render();
     }
 

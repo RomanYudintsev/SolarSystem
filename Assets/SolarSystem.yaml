@@ -1,10 +1,12 @@
 stars:
   - name: sun
     selfRadius: 10
-    selfRotationSpeed: 20
+    selfRotationSpeed: 1
     orbitRadius: 0
     orbitAngle: 0
-    orbitRotationSpeed: 2
+    orbitRotationSpeed: 0
+    description: 'sun on google.com.<br/><a href="http://google.com/?q=sun">more info</a>'
+    skin: "sun.png"
 planets:
   - name: mercury
     selfRadius: 3
@@ -12,43 +14,57 @@ planets:
     orbitRadius: 50
     orbitAngle: 0
     orbitRotationSpeed: 0.5
+    description: 'mercury on google.com.<br/><a href="http://google.com/?q=mercury">more info</a>'
+    skin: "mercury.png"
   - name: venus
     selfRadius: 5
-    selfRotationSpeed: 2.5
+    selfRotationSpeed: 1
     orbitRadius: 70
     orbitAngle: 0
     orbitRotationSpeed: 0.4
+    description: 'venus on google.com.<br/><a href="http://google.com/?q=venus">more info</a>'
+    skin: "venus.png"
   - name: earth
     selfRadius: 4
-    selfRotationSpeed: 0
+    selfRotationSpeed: 2
     orbitRadius: 100
     orbitAngle: 0
     orbitRotationSpeed: 0.3
+    description: 'earth on google.com.<br/><a href="http://google.com/?q=earth">more info</a>'
+    skin: "earth.png"
   - name: mars
     selfRadius: 5
-    selfRotationSpeed: 0
+    selfRotationSpeed: 3
     orbitRadius: 130
     orbitAngle: 0
     orbitRotationSpeed: 0.25
+    description: 'sun on google.com.<br/><a href="http://google.com/?q=sun">more info</a>'
+    skin: "mars.png"
 satelites:
-  - name: luna
+  - name: moon
     selfRadius: 1
-    selfRotationSpeed: 0
+    selfRotationSpeed: 2
     orbitRadius: 10
     orbitAngle: 0
     orbitRotationSpeed: 4
     parent: earth
+    description: 'moon on google.com.<br/><a href="http://google.com/?q=luna">more info</a>'
+    skin: "moon.png"
   - name: phobos
     selfRadius: 1
-    selfRotationSpeed: 0
+    selfRotationSpeed: 2
     orbitRadius: 10
     orbitAngle: 0
     orbitRotationSpeed: 5
     parent: mars
+    description: 'phobos on google.com.<br/><a href="http://google.com/?q=phobos">more info</a>'
+    skin: "phobos.png"
   - name: deimos
     selfRadius: 1
-    selfRotationSpeed: 0
+    selfRotationSpeed: 2
     orbitRadius: 10
-    orbitAngle: 0
+    orbitAngle: 30
     orbitRotationSpeed: 2
     parent: mars
+    description: 'deimos on google.com.<br/><a href="http://google.com/?q=deimos">more info</a>'
+    skin: "deimos.png"
